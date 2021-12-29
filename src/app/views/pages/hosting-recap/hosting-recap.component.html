@@ -1,0 +1,75 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a routerLink=".">Hostings</a></li>
+      <!-- <li class="breadcrumb-item active" aria-current="page">Hostings</li> -->
+    </ol>
+</nav>
+
+<!-- Table -->
+<!-- <div class="row">
+    <div class="col-md-12 stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th style="width: 20%;">Hostname</th>
+                          <th style="width: 20%;">Days Left</th>
+                          <th style="width: 20%;">Last Update</th>
+                          <th style="width: 20%;">IP / Target</th>
+                          <th style="width: 20%;">Status</th>
+                          <th style="width: 20%;">Type</th>
+                        </tr>
+                      </thead>
+                      <tbody *ngFor="let row of hostings">
+                        <tr>
+                          <th>{{row.hostname}}</th>
+                           <th *ngIf="row.days_left > 7">{{row.days_left}} Days</th>
+                          <th *ngIf="row.days_left <= 7" style="color: red;">{{row.days_left}} Days</th> 
+                          <th>{{row.days_left}} Days</th>
+                          <th>{{row.last_update}}</th>
+                          <th>{{row.ip_target}}</th>s
+                          <th>{{row.status}}</th>
+                          <th>{{row.type}}</th>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<button type="button" class="btn btn-primary" (click)="testSocket()">Click me :)</button>
+
+  <div class="card">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th style="width: 5%;">#</th>
+              <th style="width: 20%;">Hostname</th>
+              <th style="width: 20%;">Days Left</th>
+              <th style="width: 20%;">Ip / Target</th>
+              <th style="width: 20%;">Status</th>
+              <th style="width: 20%;">Type</th>
+              <th style="width: 20%;">Last Update</th>
+            </tr>
+          </thead>
+          <tbody *ngFor="let hosting of hostings; let i = index">
+            <tr>
+              <th>{{i + 1}}</th>
+              <td style="color: rgb(1, 177, 221);">{{hosting.hostname}}</td>
+              <td *ngIf="hosting.days_left > 7">{{hosting.days_left}} Days</td>
+              <td *ngIf="hosting.days_left <= 7" style="color: red;">{{hosting.days_left}} Days</td>
+              <td style="color: rgb(0, 187, 31);">{{hosting.ip_target}}</td>
+              <td>{{hosting.status}}</td>
+              <td>{{hosting.type}}</td>
+              <td>{{hosting.last_update}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
