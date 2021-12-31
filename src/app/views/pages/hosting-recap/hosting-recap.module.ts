@@ -2,6 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HostingRecapComponent } from './hosting-recap.component';
 import { RouterModule, Routes } from '@angular/router';
+import { CredentialsComponent } from './credentials/credentials.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 const routes: Routes = [
   {
@@ -11,10 +13,12 @@ const routes: Routes = [
 ]
 
 @NgModule({
-  declarations: [HostingRecapComponent],
+  declarations: [HostingRecapComponent, CredentialsComponent],
   imports: [
     CommonModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    ReactiveFormsModule,
+    FormsModule
   ]
 })
 export class HostingRecapModule { }

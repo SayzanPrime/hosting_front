@@ -1,13 +1,17 @@
 {
-  "name": "nobleui-angular",
+  "name": "electron-angular",
   "version": "1.0.0",
+  "author": "Sayzan",
+  "description": "Hosting app!",
+  "main": "main.js",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "electron": "ng build --base-href ./ && electron ."
   },
   "private": true,
   "dependencies": {
@@ -74,6 +78,7 @@
     "@types/jasminewd2": "~2.0.8",
     "@types/node": "~14.14.20",
     "codelyzer": "^6.0.1",
+    "electron": "^16.0.5",
     "jasmine-core": "~3.6.0",
     "jasmine-spec-reporter": "~6.0.0",
     "karma": "~5.2.3",

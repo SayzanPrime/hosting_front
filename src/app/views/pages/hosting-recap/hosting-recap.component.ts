@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { take } from 'rxjs/operators';
-import { webSocket } from 'rxjs/webSocket';
 import { HostingRecapService } from './service/hosting-recap.service';
+import { webSocket } from "rxjs/webSocket";
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { CredentialsComponent } from './credentials/credentials.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-hosting-recap',
@@ -10,44 +13,117 @@ import { HostingRecapService } from './service/hosting-recap.service';
 })
 export class HostingRecapComponent implements OnInit {
 
+  constructor(
+    private hostingRecapService: HostingRecapService,
+    private modalService: NgbModal
+  ) { }
+
   hostings: any;
 
-  message: any = 'yes sir';
+  username: any;
 
-  constructor(
-    private hostingRecapService: HostingRecapService
-  ) { }
+  password: any;
+
+  last_update: any;
+
+  loadCredentials: boolean = false;
+
+  credentials: any;
 
   ngOnInit(): void {
 
+    this.onStartup();
   }
 
-  testSocket(){
-    const websocketService = webSocket('ws://127.0.0.1:8000/ws/hosting')
-    websocketService.subscribe(
-      msg => console.log('message received: ' + msg), // Called whenever there is a message from the server.
-      err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
-      () => console.log('complete') // Called when connection is closed (for whatever reason).
-    );
-    
-    // this.websocketService.subscribe(
-    //   data => {
-    //     this.hostings = data;
-    //   }
-    // );
+  onStartup(){
+    this.hostingRecapService.checkCredentials().pipe(take(1)).subscribe(data => {
+      console.log(data);
+      
+      if (!data){
+
+        this.sendCredentials()
+      
+      }else{
+        this.connectWs()
+      }
+ 
+    },
+    error => {        
+      // need to loads the last history of data saved
+      console.log(error);
+    });
+  }
+
+  sendCredentials(){
+    const modalRef = this.modalService.open(CredentialsComponent, { size: 'sm', centered: true })
+
+    modalRef.result.then((result) => {
+      if (result) {
+        this.loadingScriptSwal();
+        this.credentials = result
+        this.credentialsSend()
+      }
+    }).catch((res) => {
+      Swal.close()
+    });
 
   }
 
-  getHostings(){
-    this.hostingRecapService.getHostings().pipe(take(1)).subscribe(data => {
-      this.hostings = data;
-      console.log(this.hostings);
+  changeCredentials(){
+    this.sendCredentials()
+  }
+
+  credentialsSend(){
+    this.hostingRecapService.sendCredentials(this.credentials).pipe(take(1)).subscribe(data => {
+      if (data == 'Connected successfully!'){
+        Swal.close()
+      }else{
+        this.errorSwal()
+      }
+      this.connectWs()
       
     },
-      error => {        
-        console.log(error);
-      }
+    error => {        
+      console.log(error);
+    }
     );
   }
 
+  connectWs(){
+    const hostings_ws = webSocket('ws://127.0.0.1:8000/ws/hostings')
+      hostings_ws.next({message: 'Connected To Client Via WebSockets'});
+      hostings_ws.subscribe(
+        msg => this.hostings = msg, // Called whenever there is a message from the server.
+        err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
+        () => console.log('complete') // Called when connection is closed (for whatever reason).
+      );
+
+
+      const last_update_ws = webSocket('ws://127.0.0.1:8000/ws/last_update')
+      last_update_ws.next({message: 'Connected To Client Via WebSockets'});
+      last_update_ws.subscribe(
+        msg => this.last_update = msg, // Called whenever there is a message from the server.
+        err => console.log(err), // Called if at any point WebSocket API signals some kind of error.
+        () => console.log('complete') // Called when connection is closed (for whatever reason).
+      );
+  }
+
+  loadingScriptSwal(){
+    Swal.fire({
+      title: 'Script Currently Running ...',
+      text: 'Please Wait ...',
+      willOpen:() => {
+        Swal.showLoading()
+      }
+    })
+  }
+
+  errorSwal(){
+    Swal.fire({
+      icon: 'error',
+      title: 'Error ...',
+      text: 'Failed to connect, Please try again!',
+      
+    })
+  }
 }
