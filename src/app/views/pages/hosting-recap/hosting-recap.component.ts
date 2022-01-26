@@ -5,6 +5,7 @@ import { webSocket } from "rxjs/webSocket";
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { CredentialsComponent } from './credentials/credentials.component';
 import Swal from 'sweetalert2';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-hosting-recap',
@@ -12,6 +13,8 @@ import Swal from 'sweetalert2';
   styleUrls: ['./hosting-recap.component.scss']
 })
 export class HostingRecapComponent implements OnInit {
+
+  readonly WSUrl = environment.WSUrl;
 
   constructor(
     private hostingRecapService: HostingRecapService,
@@ -90,7 +93,7 @@ export class HostingRecapComponent implements OnInit {
   }
 
   connectWs(){
-    const hostings_ws = webSocket('ws://127.0.0.1:8000/ws/hostings')
+    const hostings_ws = webSocket(this.WSUrl + 'hostings')
       hostings_ws.next({message: 'Connected To Client Via WebSockets'});
       hostings_ws.subscribe(
         msg => this.hostings = msg, // Called whenever there is a message from the server.
@@ -99,7 +102,7 @@ export class HostingRecapComponent implements OnInit {
       );
 
 
-      const last_update_ws = webSocket('ws://127.0.0.1:8000/ws/last_update')
+      const last_update_ws = webSocket(this.WSUrl + 'last_update')
       last_update_ws.next({message: 'Connected To Client Via WebSockets'});
       last_update_ws.subscribe(
         msg => this.last_update = msg, // Called whenever there is a message from the server.
